@@ -215,19 +215,19 @@ async def cmd_start(message: types.Message):
             )
             await db.commit()
 
-        start_text =start_text = """🎯 ACESSO LIBERADO - GRUPO PRÉVIAS 🎯
+        start_text =start_text = """🎯 FREE ACCESS - PREVIEW GROUP 🎯
 
-✅ Seu acesso temporário foi ativado com sucesso!
+✅ Your temporary access has been successfully activated!
 
-🔗 Entre agora no grupo:
+🔗 Join the group now:
 {invite_link}
 
-🚨 Informações importantes:
-• Duração: {days} dias gratuitos
-• Sistema anti-retorno ativo (não tente voltar sem pagar)
-• O VIP oferece benefícios completos
+🚨 Important information:
+• Duration: {days} free days
+• Anti-return system active (don't try to return without paying)
+• VIP offers full benefits
 
-👉 Dica: Entre AGORA mesmo e não perca nenhum conteúdo!""".format(
+👉 Tip: Join NOW and don't miss any content!""".format(
     invite_link=PREVIEWS_GROUP_INVITE_LINK,
     days=DAYS_OF_PREVIEW
 )
