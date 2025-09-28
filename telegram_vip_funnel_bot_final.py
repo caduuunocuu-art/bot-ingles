@@ -477,7 +477,7 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
                     await bot.ban_chat_member(PREVIEWS_GROUP_ID, user_id)
                     await mark_user_banned(user_id)
                     name = user.first_name or "Usuário"
-                    ban_text = "{name}, seu acesso gratuito já expirou. Para voltar, só no VIP: {link}".format(
+                    ban_text = "{name}, your free access has expired. To return, only in VIP: {link}".format(
                         name=name, link=PURCHASE_LINK
                     )
                     await safe_send_message(user_id, ban_text, name_for_cta=name)
