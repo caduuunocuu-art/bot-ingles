@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+.envrc
+*.sqlite3
+*.db
+vip_funnel_async.db
+instance/
+.env.local
