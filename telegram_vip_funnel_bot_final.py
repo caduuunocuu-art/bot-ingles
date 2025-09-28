@@ -11,19 +11,13 @@ import asyncio
 import logging
 from datetime import datetime, timedelta
 import pytz
-
 import aiosqlite
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ChatType, ChatMemberUpdated
 from aiogram.utils import executor
 from aiogram.utils.exceptions import (
-    RetryAfter,
-    BotBlocked,
-    ChatNotFound,
-    UserDeactivated,
-    Unauthorized,
-    ChatAdminRequired,
-    TelegramAPIError,
+    RetryAfter, BotBlocked, ChatNotFound, UserDeactivated, Unauthorized,
+    ChatAdminRequired, TelegramAPIError,
 )
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
@@ -31,10 +25,10 @@ from apscheduler.triggers.date import DateTrigger
 # -------------------------
 # CONFIG — EDITE/USE AMBIENTE
 # -------------------------
+
 API_TOKEN = os.getenv("TG_BOT_TOKEN", "PUT_YOUR_BOT_TOKEN_HERE")
 PREVIEWS_GROUP_ID = int(os.getenv("PREVIEWS_GROUP_ID", "-1003053104506"))
 PREVIEWS_GROUP_INVITE_LINK = os.getenv("PREVIEWS_GROUP_INVITE_LINK", "https://t.me/+wYpQExxUOzkyNDk5")
-
 # Redirecionamento para o bot de vendas (clicável)
 PURCHASE_LINK = os.getenv("PURCHASE_LINK", "https://t.me/Grupo_Vip_BR2bot")
 DISCOUNT_LINK = os.getenv("DISCOUNT_LINK", PURCHASE_LINK)
@@ -45,7 +39,6 @@ DAYS_OF_PREVIEW = int(os.getenv("DAYS_OF_PREVIEW", "7"))
 RETARGET_DAYS = int(os.getenv("RETARGET_DAYS", "3"))
 
 DB_PATH = os.getenv("DB_PATH", "vip_funnel_async.db")
-
 # Envio imediato da mensagem do Dia 1 (delay em segundos após entrar no grupo)
 SEND_IMMEDIATE_DELAY_SECONDS = int(os.getenv("SEND_IMMEDIATE_DELAY_SECONDS", "10"))
 MAX_MESSAGE_RETRIES = int(os.getenv("MAX_MESSAGE_RETRIES", "3"))
@@ -85,12 +78,14 @@ TZ = pytz.timezone(os.getenv("TIMEZONE", "America/Sao_Paulo"))
 # -------------------------
 # Logging
 # -------------------------
+
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # -------------------------
 # Bot & scheduler
 # -------------------------
+
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 scheduler = AsyncIOScheduler(timezone=TZ)
@@ -98,6 +93,7 @@ scheduler = AsyncIOScheduler(timezone=TZ)
 # -------------------------
 # DB schema (assíncrona)
 # -------------------------
+
 CREATE_SQL = """
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
@@ -124,57 +120,61 @@ _db_lock = asyncio.Lock()
 # Mensagens estruturadas (funil 7 dias x 3 envios/dia + retarget)
 # (baseado no CODE B, adaptado)
 # -------------------------
+
 MESSAGES_SCHEDULE = {
     "1": {
-        "13:00": "🔥 {name}, TODAY IS THE BIG DAY! HIT IT ALL! Don't miss the previews, they're free and only available today! 😱 {link}",
-        "18:00": "⚠️ ATTENTION {name}! The previews will be available for a few hours only. Don’t be left out! {link}",
-        "22:00": "🌙 {name}, BEFORE YOU GO TO SLEEP… Remember that today you had access to free previews. Don’t miss it! {link}"
+        "13:00": "🔥 {name}… HIT IT ALL! You just found what you've always been looking for! 🎯\n\nThis is just the TIP OF THE ICEBERG… VIP has CONTENT YOU CAN'T IMAGINE! 💎\n\n🚀 Want to see EVERYTHING? The next step is ONE CLICK: {link}",
+        "18:00": "⚠️ ATTENTION {name}! TODAY the VIP received EXCLUSIVE CONTENT that NOBODY in the preview saw… 🚫\n\nWhile you hesitate, others are already INSIDE enjoying EVERYTHING! 💰\n\n🎯 Are you just going to be CURIOUS? {link}",
+        "22:00": "🌙 {name}, BEFORE YOU GO TO SLEEP… Just think: THE BEST CONTENT is in VIP! 🏆\n\nHere it's just the APPETIZER… There it's the FULL BANQUET! 🍽️\n\n💥 Want the MAIN COURSE? {link}"
     },
     "2": {
-        "13:00": "🚨 {name} ALERT! DAY 2 of previews is ON! Don’t miss the chance to see everything before it disappears! {link}",
-        "18:00": "⚖️ THERE ARE TWO TYPES OF PEOPLE: Those who will take advantage of this opportunity and those who will regret it later. Which one are you, {name}? {link}",
-        "22:00": "⏰ {name}, EVERY HOUR THAT PASSES, fewer previews remain! Don’t leave it for later. {link}"
+        "13:00": "🚨 {name} ALERT! VIP is EXPLODING with HOT NEWS! 🔥\n\nContent you'll NEVER SEE in the preview… 📛\n\n🎯 Still in doubt? This is UNLIMITED TOTAL ACCESS: {link}",
+        "18:00": "⚖️ THERE ARE TWO TYPES OF PEOPLE:\n\n❌ Those who JUST WATCH through the window\n✅ Those who have FULL ACCESS to the party\n\n🏆 Which team do you want to be on? {link}",
+        "22:00": "⏰ {name}, EVERY HOUR THAT PASSES… More EXCLUSIVE CONTENT arrives in VIP! 💎\n\nWhile you wait, others are ENJOYING IT! 🚀\n\n🔥 Don't miss out: {link}"
     },
     "3": {
-        "13:00": "🔥 {name}, DAY 3 IS HERE! People are raving about the previews! Come check it out too! {link}",
-        "18:00": "⚠️ ATTENTION: The previews are being watched A LOT today! Don’t be the only one left out, {name}! {link}",
-        "22:00": "🌙 Goodnight, {name}! Don’t forget: today the previews were 🔥🔥🔥 and tomorrow there’s more! Stay tuned! {link}"
+        "13:00": "🍞 {name}, CRUMBS or FULL BANQUET? 🍽️\n\nAt VIP we have EVERYTHING you REALLY LOOK FOR! 💎\n\n🎯 No more just SMELLING… {link}",
+        "18:00": "👥 {name}, VIP is RECEIVING COMPLIMENTS from those who entered! ⭐⭐⭐⭐⭐\n\n\"I SHOULD HAVE DONE THIS EARLIER!\" - say the members… 💬\n\n🚀 Don't be the only one left wanting more: {link}",
+        "22:00": "🎯 {name}, HERE ARE THE CRUMBS… 🍞\n\nTHE FULL CONTENT is in VIP! 🏆\n\n💥 Let's solve this NOW? {link}"
     },
     "4": {
-        "13:00": "🚨 HALF OF THE JOURNEY, {name}! Day 4 of previews! If you haven’t joined yet, you’re losing! {link}",
-        "18:00": "⚡ MIDDAY ENERGY: THE VIP is almost opening! The previews are a glimpse of what’s to come! {link}",
-        "22:00": "🌙 {name}, sleep knowing tomorrow there’s EVEN MORE previews for you! {link}"
+        "13:00": "💎 {name}, NO MORE THINGS ABOUT IT! 🚫\n\nVIP is where the REAL THINGS HAPPEN! 🔥\n\nWhile you're thinking, others are already INSIDE! 👥\n\n🎯 Time to ACT: {link}",
+        "18:00": "📈 {name}, WHO ENTERED THE VIP said: \"IT WAS EVERYTHING I WAS LOOKING FOR!\" 💬\n\nDon't make the mistake of LEAVING IT FOR LATER… ⏰\n\n🚀 Regret is BITTER: {link}",
+        "22:00": "🚨 LAST CHANCE TODAY! 🚨\n\nVIP = UNLIMITED ACCESS + EXCLUSIVE CONTENT! 💎\n\n⏰ Are you going to miss this OPPORTUNITY? {link}"
     },
     "5": {
-        "13:00": "🔥 {name}, Day 5 has arrived with surprises! Come and see what everyone is talking about! {link}",
-        "18:00": "⚠️ ATTENTION: More than half of the previews are gone! Don’t leave it for later! {link}",
-        "22:00": "🌙 END OF DAY 5, {name}! We’re almost at the end… Stay tuned for tomorrow! {link}"
+        "13:00": "🔄 {name}, VIP RECEIVES NEW CONTENT EVERY DAY! 📅\n\nMeanwhile, here you only get to KNOW FROM THE OUTSIDE… 🚫\n\n🎯 No more staying on the SURFACE: {link}",
+        "18:00": "👀 {name}, THOSE WHO JOINED YESTERDAY are already ENJOYING EVERYTHING! 💎\n\nAnd you? Still in DOUBT? 🤔\n\n🚀 Don't be left behind: {link}",
+        "22:00": "⚡ OPPORTUNITY DOESN'T WAIT! ⏰\n\nVIP is NOW or NEVER AGAIN! 🎯\n\n💥 This opportunity doesn't come again: {link}"
     },
     "6": {
-        "13:00": "🚨 DAY 6! PENULTIMATE DAY of previews! Last chance to enjoy it! {link}",
-        "18:00": "🔥 {name}, THE VIP is about to open and you’ll want to be inside! Check the previews! {link}",
-        "22:00": "⏰ Don’t waste time, {name}! Only one more day of previews left! {link}"
+        "13:00": "📅 {name}, 6 DAYS OF PREVIEW… AND YOU STILL HAVEN'T SEEN ANYTHING THAT REALLY MATTERS! 🚫\n\nTime to CHANGE THIS GAME! 🎯\n\n🚀 No more crumbs: {link}",
+        "18:00": "💎 VIP is RECEIVING SO MUCH CONTENT that I can't even compare it to the preview! 📈\n\nWhile you hesitate, the COLLECTION just GROWS! 🔥\n\n🎯 Want to see EVERYTHING? {link}",
+        "22:00": "⏰ {name}, TOMORROW DECIDES EVERYTHING! 🚨\n\nYour chance is ENDING… 💸\n\n⚡ Don't leave it to the LAST MINUTE: {link}"
     },
     "7": {
-        "13:00": "🚨 🚨 🚨 {name} — LAST DAY! Last chance to watch free previews! {link}",
-        "18:00": "⚡ NOW OR NEVER! ⚡ If you haven’t joined yet, this is your last chance! {link}",
-        "22:00": "🚨 🚨 🚨 {name} — LAST CALL! Tomorrow the VIP opens, and previews will disappear! {link}"
-    },
+        "13:00": "🚨 🚨 🚨 {name} — LAST DAY! ⏰\n\nAfter today, THE PREVIEW IS OVER! 🚫\n\nVIP is NOW or NEVER AGAIN! 💎\n\n🎯 Get your access BEFORE IT CLOSES: {link}",
+        "18:00": "⚡ NOW OR NEVER! ⚡\n\n{name}, those who leave it for later ALWAYS REGRET IT! 😭\n\nVIP is FULL ACCESS GUARANTEE! 🏆\n\n🔥 Don't be another one crying: {link}",
+        "22:00": "🚨 🚨 🚨 {name} — LAST CALL! 🎯\n\n⏰ MIDNIGHT AND IT'S OVER! 💸\n\nIt's VIP or it's OUT! 🚫\n\n💥 YOUR LAST CHANCE: {link}"
+    }
+}
+
+{
     "retarget": {
         "1": {
-            "13:00": "💔 {name}, YOUR PREVIEW ACCESS IS OVER… 😢 But the VIP IS OPENING and you still have a chance! {link}",
-            "18:00": "🚨 {name}, RIGHT NOW: NEW CONTENT IN VIP! Don’t stay out again! {link}",
-            "22:00": "🎁 SPECIAL CONDITION TODAY ONLY! Enter with a DISCOUNT! {discount_link}"
+            "13:00": "💔 {name}, YOUR PREVIEW ACCESS IS OVER… 😢\n\nBut VIP is still BOOMING with EXCLUSIVE CONTENT! 🔥\n\n🎯 Want to GO BACK to PARADISE? {link}",
+            "18:00": "🚨 {name}, RIGHT NOW: NEW CONTENT IN VIP! 📹\n\nYou're MISSING THE BEST! 💎\n\n⚡ Come back NOW: {link}",
+            "22:00": "🎁 SPECIAL CONDITION TODAY ONLY! 💰\n\nLast chance to return with a FLASH DISCOUNT! ⚡\n\n🚀 Don't miss out: {discount_link}"
         },
         "2": {
-            "13:00": "👥 {name}, THOSE WHO CAME IN DIDN’T REGRET IT! VIP is booming and you can still be part of it! {link}",
-            "18:00": "📈 {name}, VIP just keeps getting better, and you’re still out… Don’t waste more time! {link}",
-            "22:00": "🔥 SPECIAL FLASH OFFER! ⚡ Today only: DISCOUNT to enter VIP! {discount_link}"
+            "13:00": "👥 {name}, THOSE WHO CAME IN DIDN'T REGRET IT! ⭐⭐⭐⭐⭐\n\n\"BEST DECISION!\" - say VIP members… 💬\n\n💔 Don't just miss it: {link}",
+            "18:00": "📈 {name}, VIP just keeps getting better and better! 🚀\n\nNew content EVERY DAY! 📅\n\n🎯 Time to RECONSIDER? {link}",
+            "22:00": "🔥 SPECIAL FLASH OFFER! ⚡\n\nOnly until today: UNBEATABLE CONDITIONS! 💎\n\n⏰ Last hours: {discount_link}"
         },
         "3": {
-            "13:00": "⏰ {name}, LAST CHANCE TO REDEEM! 🚨 The VIP is already open and booming! {link}",
-            "18:00": "⚡ FINAL DECISION: IT’S NOW OR NEVER! The doors are closing! {link}",
-            "22:00": "🚨 🚨 🚨 LAST MESSAGE! ⚡ Today is the last day to enter VIP with SPECIAL CONDITIONS! {discount_link}"
+            "13:00": "⏰ {name}, LAST CHANCE TO REDEEM! 🚨\n\nAfter this, THAT'S IT… 💸\n\n🎯 Don't burn your chance: {link}",
+            "18:00": "⚡ FINAL DECISION: IT'S NOW OR NEVER! 🎯\n\n{name}, the VIP is WAITING for you! 💎\n\n🚀 Last call: {link}",
+            "22:00": "🚨 🚨 🚨 LAST MESSAGE! ⚡\n\n{name}, DON'T IGNORE THIS CHANCE! 💔\n\n🎁 FINAL OFFER WITH DISCOUNT: {discount_link}\n\n💥 AFTER THIS, TOTAL SILENCE..."
         }
     }
 }
@@ -182,6 +182,7 @@ MESSAGES_SCHEDULE = {
 # -------------------------
 # Inicialização do banco de dados
 # -------------------------
+
 async def init_db():
     async with aiosqlite.connect(DB_PATH) as db:
         await db.executescript(CREATE_SQL)
@@ -191,6 +192,7 @@ async def init_db():
 # -------------------------
 # Handlers (mantidos do Código A)
 # -------------------------
+
 @dp.message_handler(commands=["start"], chat_type=ChatType.PRIVATE)
 async def cmd_start(message: types.Message):
     user_id = message.from_user.id
@@ -217,8 +219,7 @@ async def cmd_start(message: types.Message):
 
 ✅ Your temporary access has been successfully activated!
 
-🔗 Join the group now:
-{invite_link}
+🔗 Join the group now: {invite_link}
 
 🚨 Important information:
 • Duration: {days} free days
@@ -239,6 +240,7 @@ async def cmd_start(message: types.Message):
 # -------------------------
 # Funções auxiliares (DB + envio)
 # -------------------------
+
 async def safe_send_message(chat_id: int, text: str, name_for_cta: str, max_retries: int = MAX_MESSAGE_RETRIES) -> bool:
     """Envia texto + vídeo com CTA, respeitando limites e re-tentativas."""
     attempt = 0
@@ -262,6 +264,7 @@ async def safe_send_message(chat_id: int, text: str, name_for_cta: str, max_retr
             logger.warning(f"Falha ao enviar mensagem para {chat_id} (tentativa {attempt+1}): {e}")
             attempt += 1
             await asyncio.sleep(2)
+
     logger.error(f"Falha permanente ao enviar mensagem para {chat_id} após {max_retries} tentativas.")
     return False
 
@@ -270,7 +273,8 @@ async def get_user_info(user_id: int):
         cursor = await db.execute(
             """
             SELECT user_id, username, first_name, last_name, joined_group, join_time, removed, banned
-            FROM users WHERE user_id = ?
+            FROM users
+            WHERE user_id = ?
             """,
             (user_id,),
         )
@@ -311,6 +315,7 @@ async def record_attempt(user_id: int, reason: str):
 # -------------------------
 # Função que envia a mensagem agendada (texto formatado + vídeo CTA)
 # -------------------------
+
 async def send_scheduled_message(user_id: int, day: int, hour: str, is_retarget: bool = False):
     user_info = await get_user_info(user_id)
     if not user_info:
@@ -338,7 +343,6 @@ async def send_scheduled_message(user_id: int, day: int, hour: str, is_retarget:
     # Seleciona a mensagem conforme schedule ou retarget
     try:
         day_key = str(day)  # CORREÇÃO: converter int para str para lookup nas chaves do dict
-
         if not is_retarget:
             message_template = MESSAGES_SCHEDULE.get(day_key, {}).get(hour)
         else:
@@ -368,8 +372,10 @@ async def send_scheduled_message(user_id: int, day: int, hour: str, is_retarget:
 # -------------------------
 # Agendamento das mensagens (7 dias x MESSAGE_HOURS) + retarget (RETARGET_DAYS)
 # -------------------------
+
 async def schedule_user_messages(user_id: int, username: str, first_name: str, last_name: str):
     now = datetime.now(TZ)
+
     # Agenda 7 dias (1..DAYS_OF_PREVIEW) com horas configuráveis
     for day in range(1, DAYS_OF_PREVIEW + 1):
         for hour in MESSAGE_HOURS:
@@ -382,6 +388,7 @@ async def schedule_user_messages(user_id: int, username: str, first_name: str, l
 
             target_date = (now + timedelta(days=day - 1)).date()
             run_dt = TZ.localize(datetime.combine(target_date, hour_dt))
+
             job_id = f"user_{user_id}_day_{day}_hour_{hour}"
             scheduler.add_job(
                 send_scheduled_message,
@@ -411,8 +418,10 @@ async def schedule_user_messages(user_id: int, username: str, first_name: str, l
                 hour_dt = datetime.strptime(hour.strip(), "%H:%M").time()
             except Exception:
                 continue
+
             target_date = (now + timedelta(days=DAYS_OF_PREVIEW + rday - 1)).date()
             run_dt = TZ.localize(datetime.combine(target_date, hour_dt))
+
             job_id = f"user_{user_id}_retarget_day_{rday}_hour_{hour}"
             scheduler.add_job(
                 send_scheduled_message,
@@ -427,6 +436,7 @@ async def schedule_user_messages(user_id: int, username: str, first_name: str, l
 # -------------------------
 # Remoção do usuário do grupo (kick) — mantém comportamento do Código A
 # -------------------------
+
 async def remove_user_from_group(user_id: int):
     try:
         # Tenta remover/banir e depois desbanir para "kick" efetivo
@@ -434,14 +444,14 @@ async def remove_user_from_group(user_id: int):
         # espera breve para garantir o kick (60s como antes)
         await asyncio.sleep(60)
         await bot.unban_chat_member(PREVIEWS_GROUP_ID, user_id)
-
         await mark_user_removed(user_id)
 
         user_info = await get_user_info(user_id)
         if user_info:
             name = user_info[2] or "Usuário"
             removal_text = "Your access to the preview group has ended, {name} ❌\n\nJoin VIP to continue: {link}".format(
-                name=name, link=PURCHASE_LINK
+                name=name,
+                link=PURCHASE_LINK
             )
             await safe_send_message(user_id, removal_text, name_for_cta=name)
 
@@ -458,6 +468,7 @@ async def remove_user_from_group(user_id: int):
 # -------------------------
 # Handler para novos membros no grupo de prévia (anti-retorno)
 # -------------------------
+
 @dp.chat_member_handler(chat_id=PREVIEWS_GROUP_ID)
 async def handle_chat_member_update(update: ChatMemberUpdated):
     # Quando alguém entra como 'member' no grupo de prévias
@@ -465,7 +476,6 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
         if update.new_chat_member.status == 'member':
             user = update.new_chat_member.user
             user_id = user.id
-
             user_info = await get_user_info(user_id)
 
             # Se já foi removido: tentativa de retorno => ban + aviso
@@ -476,7 +486,8 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
                     await mark_user_banned(user_id)
                     name = user.first_name or "Usuário"
                     ban_text = "{name}, your free access has expired. To return, only in VIP: {link}".format(
-                        name=name, link=PURCHASE_LINK
+                        name=name,
+                        link=PURCHASE_LINK
                     )
                     await safe_send_message(user_id, ban_text, name_for_cta=name)
                     logger.info(f"Usuário {user_id} ({name}) banido por tentativa de retorno")
@@ -500,11 +511,12 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
 
                 # Mensagem imediata (dia 1) — enviamos a primeira mensagem após pequeno delay (configurável)
                 await asyncio.sleep(SEND_IMMEDIATE_DELAY_SECONDS)
-                # Primeiro envio: dia 1  - assumimos que uma das horas contém "12:00" etc., mas aqui chamamos diretamente:
+                # Primeiro envio: dia 1 - assumimos que uma das horas contém "12:00" etc., mas aqui chamamos diretamente:
                 # Vamos enviar a mensagem do "day 1" para o horário corrente (com is_retarget=False)
                 # Para consistência com o agendamento, enviamos a mensagem do dia 1 no horário do primeiro MESSAGE_HOURS[0]
                 first_hour = MESSAGE_HOURS[0].strip() if MESSAGE_HOURS else "12:00"
                 await send_scheduled_message(user_id, 1, first_hour, is_retarget=False)
+
                 logger.info(f"Novo usuário {user_id} ({user.first_name}) adicionado ao grupo e agendado")
     except Exception as e:
         logger.exception(f"Erro ao processar chat_member_update: {e}")
@@ -512,6 +524,7 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
 # -------------------------
 # Comandos administrativos (stats & broadcast) — adaptado do A
 # -------------------------
+
 @dp.message_handler(commands=['stats'], user_id=list(ADMINS), chat_type=ChatType.PRIVATE)
 async def cmd_stats(message: types.Message):
     try:
@@ -607,6 +620,7 @@ async def cmd_cancel_broadcast(message: types.Message):
 # -------------------------
 # Startup / Shutdown
 # -------------------------
+
 async def on_startup(_):
     await init_db()
     scheduler.start()
