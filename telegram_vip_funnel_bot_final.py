@@ -58,23 +58,22 @@ ADMINS = set(map(int, os.getenv("ADMINS", "7708241274").split(",")))
 
 # CTA persuasivo (usa {name}) — será usado na legenda do vídeo
 CTA_TEXT = """
-⚡ ATENÇÃO, {name}! SEU ACESSO GRATUITO ESTÁ SE ESGOTANDO! ⏰
+⚡ ATTENTION, {name}! YOUR FREE ACCESS IS RUNNING OUT! ⏰
 
-🎯 ENQUANTO VOCÊ LÊ ESTA MENSAGEM:
-✅ Membros VIP já estão acessando CONTEÚDO EXCLUSIVO
-✅ Novos materiais sendo adicionados AGORA MESMO
-✅ Você está PERDENDO as MELHORES PARTES!
+🎯 WHILE YOU READ THIS MESSAGE:
+✅ VIP members are already accessing EXCLUSIVE CONTENT
+✅ New content being added RIGHT NOW
+✅ You're MISSING the BEST PARTS!
 
-💎 NO VIP VOCÊ GARANTE:
-🚀 ACESSO COMPLETO 24/7
-🔥 CONTEÚDO 100% EXCLUSIVO
-🎯 SEM CENSURA • SEM LIMITES
-⭐ ATUALIZAÇÕES DIÁRIAS
+💎 WITH VIP, YOU'RE GUARANTEED:
+🚀 FULL ACCESS 24/7
+🔥 100% EXCLUSIVE CONTENT
+🎯 UNCENSORED • UNLIMITED
+⭐ DAILY UPDATES
 
-🚨 NÃO SEJA O ÚLTIMO DA FILA!
-Quem espera SEMPRE fica para trás...
+🚨 DON'T BE LAST IN LINE! Those who wait ALWAYS get left behind...
 
-👉 FALE AGORA COM O BOT: @Grupo_Vip_BR2bot
+👉 TALK TO THE BOT NOW: @Vips_Groupp_US_BOT
 """
 
 # Horários configuráveis (formato "HH:MM")
