@@ -51,7 +51,7 @@ SEND_IMMEDIATE_DELAY_SECONDS = int(os.getenv("SEND_IMMEDIATE_DELAY_SECONDS", "10
 MAX_MESSAGE_RETRIES = int(os.getenv("MAX_MESSAGE_RETRIES", "3"))
 
 # Vídeo .mp4 direto (usado como CTA em todos os envios)
-VIDEO_URL = os.getenv("VIDEO_URL", "https://botdiscarado.com.br/video.mp4/leve.mp4")
+VIDEO_URL = os.getenv("VIDEO_URL", "https://botdiscarado.com.br/ingles.mp4/leve.mp4")
 
 # Admins (IDs). Use vírgula para múltiplos IDs em ADMINS.
 ADMINS = set(map(int, os.getenv("ADMINS", "7708241274").split(",")))
