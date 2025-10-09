@@ -1,4 +1,4 @@
-# telegram_vip_funnel_bot_final.py
+# telegram_vip_funnel_bot_final.py.
 # ----------------------------------------------------------------------------
 # Versão combinada: Código A com agendamento do Código B (3x/dia + retarget 3 dias)
 # Dependências: aiogram, APScheduler, aiosqlite, pytz
