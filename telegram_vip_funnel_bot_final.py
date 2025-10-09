@@ -156,10 +156,8 @@ MESSAGES_SCHEDULE = {
         "13:00": "🚨 🚨 🚨 {name} — LAST DAY! ⏰\n\nAfter today, THE PREVIEW IS OVER! 🚫\n\nVIP is NOW or NEVER AGAIN! 💎\n\n🎯 Get your access BEFORE IT CLOSES: {link}",
         "18:00": "⚡ NOW OR NEVER! ⚡\n\n{name}, those who leave it for later ALWAYS REGRET IT! 😭\n\nVIP is FULL ACCESS GUARANTEE! 🏆\n\n🔥 Don't be another one crying: {link}",
         "22:00": "🚨 🚨 🚨 {name} — LAST CALL! 🎯\n\n⏰ MIDNIGHT AND IT'S OVER! 💸\n\nIt's VIP or it's OUT! 🚫\n\n💥 YOUR LAST CHANCE: {link}"
-    }
-}
+    },
 
-{
     "retarget": {
         "1": {
             "13:00": "💔 {name}, YOUR PREVIEW ACCESS IS OVER… 😢\n\nBut VIP is still BOOMING with EXCLUSIVE CONTENT! 🔥\n\n🎯 Want to GO BACK to PARADISE? {link}",
