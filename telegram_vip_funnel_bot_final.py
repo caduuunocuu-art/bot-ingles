@@ -34,9 +34,9 @@ PURCHASE_LINK = os.getenv("PURCHASE_LINK", "https://t.me/Grupo_Vip_BR2bot")
 DISCOUNT_LINK = os.getenv("DISCOUNT_LINK", PURCHASE_LINK)
 
 # Janela de prévia (dias)
-DAYS_OF_PREVIEW = int(os.getenv("DAYS_OF_PREVIEW", "7"))
+DAYS_OF_PREVIEW = int(os.getenv("DAYS_OF_PREVIEW", "2"))
 # Quantidade de dias de retarget após o término da prévia
-RETARGET_DAYS = int(os.getenv("RETARGET_DAYS", "3"))
+RETARGET_DAYS = int(os.getenv("RETARGET_DAYS", "5"))
 
 DB_PATH = os.getenv("DB_PATH", "vip_funnel_async.db")
 # Envio imediato da mensagem do Dia 1 (delay em segundos após entrar no grupo)
@@ -117,65 +117,50 @@ CREATE TABLE IF NOT EXISTS attempts (
 _db_lock = asyncio.Lock()
 
 # -------------------------
-# Mensagens estruturadas (funil 7 dias x 3 envios/dia + retarget)
+# Mensagens estruturadas (funil 2 dias x 5 envios/dia + retarget)
 # (baseado no CODE B, adaptado)
 # -------------------------
 
 MESSAGES_SCHEDULE = {
+  "1": {
+    "12:00": "🔥 {name}, it's time to feel what few dare… 😏\n\nThis is just the preview, but the VIP is where everything happens — and you have no idea what you're missing. 💥\n\n🎯 Watch the video and taste the next level: {link}",
+    "18:00": "👀 {name}, what's happening inside is leaving everyone breathless… and you're still just imagining it? 😬\n\nDon't just watch from the sidelines. Want to feel it? Hurry: {link}",
+    "22:00": "🌙 {name}, before you sleep, think: while you're outside, the VIP is delivering experiences that would take your breath away… 💦\n\n💎 If you want in, now's the time: {link}"
+  },
+  "2": {
+    "12:00": "⏰ {name}, day two of the preview… your time is running out. ⚡\n\nAfter today, only VIP members will keep experiencing what you've only dreamed of. 🔥\n\n🎯 Ready to enter the next level? {link}",
+    "18:00": "🔥 {name}, every new scene inside hits like a punch of desire. And you're still outside, just imagining… 😏\n\n🚀 Watch the video, feel it, then join: {link}",
+    "22:00": "⚠️ Last call before you lose access to the preview, {name}! ⏰\n\nWhat happens in VIP is on another level. Want a firsthand look? 💎 {link}"
+  },
+  "retarget": {
     "1": {
-        "13:00": "🔥 {name}… HIT IT ALL! You just found what you've always been looking for! 🎯\n\nThis is just the TIP OF THE ICEBERG… VIP has CONTENT YOU CAN'T IMAGINE! 💎\n\n🚀 Want to see EVERYTHING? The next step is ONE CLICK: {link}",
-        "18:00": "⚠️ ATTENTION {name}! TODAY the VIP received EXCLUSIVE CONTENT that NOBODY in the preview saw… 🚫\n\nWhile you hesitate, others are already INSIDE enjoying EVERYTHING! 💰\n\n🎯 Are you just going to be CURIOUS? {link}",
-        "22:00": "🌙 {name}, BEFORE YOU GO TO SLEEP… Just think: THE BEST CONTENT is in VIP! 🏆\n\nHere it's just the APPETIZER… There it's the FULL BANQUET! 🍽️\n\n💥 Want the MAIN COURSE? {link}"
+      "12:00": "💔 {name}, your preview has ended… but the VIP is exploding with everything you wanted. 🔥\n\n🎯 Those who joined yesterday are already immersed in experiences you've only dreamed of… {link}",
+      "18:00": "👀 {name}, feel that? What's happening inside right now is for few — and you're still outside. 😏\n\n👉 Come back now and stop just imagining: {link}",
+      "22:00": "🎁 Flash offer for former members! ⚡\n\nFull access + special condition available for a limited time! 💎 {discount_link}"
     },
     "2": {
-        "13:00": "🚨 {name} ALERT! VIP is EXPLODING with HOT NEWS! 🔥\n\nContent you'll NEVER SEE in the preview… 📛\n\n🎯 Still in doubt? This is UNLIMITED TOTAL ACCESS: {link}",
-        "18:00": "⚖️ THERE ARE TWO TYPES OF PEOPLE:\n\n❌ Those who JUST WATCH through the window\n✅ Those who have FULL ACCESS to the party\n\n🏆 Which team do you want to be on? {link}",
-        "22:00": "⏰ {name}, EVERY HOUR THAT PASSES… More EXCLUSIVE CONTENT arrives in VIP! 💎\n\nWhile you wait, others are ENJOYING IT! 🚀\n\n🔥 Don't miss out: {link}"
+      "12:00": "😏 {name}, every click you've missed is making your desire grow… 🔥\n\n💎 Come back while VIP is open: {link}",
+      "18:00": "⚡ {name}, every minute outside is a sensation you're not feeling. Those inside are already experiencing it all. 👀\n\n🎯 Stop just wanting, come back: {link}",
+      "22:00": "🚨 Special condition still available — but only for a very short time! ⏰\n\nLast hours to return with bonus and full access: {discount_link}"
     },
     "3": {
-        "13:00": "🍞 {name}, CRUMBS or FULL BANQUET? 🍽️\n\nAt VIP we have EVERYTHING you REALLY LOOK FOR! 💎\n\n🎯 No more just SMELLING… {link}",
-        "18:00": "👥 {name}, VIP is RECEIVING COMPLIMENTS from those who entered! ⭐⭐⭐⭐⭐\n\n\"I SHOULD HAVE DONE THIS EARLIER!\" - say the members… 💬\n\n🚀 Don't be the only one left wanting more: {link}",
-        "22:00": "🎯 {name}, HERE ARE THE CRUMBS… 🍞\n\nTHE FULL CONTENT is in VIP! 🏆\n\n💥 Let's solve this NOW? {link}"
+      "12:00": "📅 {name}, it's been 3 days outside… and every new VIP content is crazier than ever. 🔥\n\nWant to feel it for real? Come back now: {link}",
+      "18:00": "💥 Every new scene is driving everyone insane… and you're still just imagining. 😏\n\n🎯 Stop wasting time, join now: {link}",
+      "22:00": "⚡ Last chance with special condition! 💎\n\nAfter this, only normal access, no bonus. Last hours: {discount_link}"
     },
     "4": {
-        "13:00": "💎 {name}, NO MORE THINGS ABOUT IT! 🚫\n\nVIP is where the REAL THINGS HAPPEN! 🔥\n\nWhile you're thinking, others are already INSIDE! 👥\n\n🎯 Time to ACT: {link}",
-        "18:00": "📈 {name}, WHO ENTERED THE VIP said: \"IT WAS EVERYTHING I WAS LOOKING FOR!\" 💬\n\nDon't make the mistake of LEAVING IT FOR LATER… ⏰\n\n🚀 Regret is BITTER: {link}",
-        "22:00": "🚨 LAST CHANCE TODAY! 🚨\n\nVIP = UNLIMITED ACCESS + EXCLUSIVE CONTENT! 💎\n\n⏰ Are you going to miss this OPPORTUNITY? {link}"
+      "12:00": "⏰ {name}, 4 days outside… every minute is a pleasure you’re missing. 😬\n\n🎯 Come back now and experience everything happening inside: {link}",
+      "18:00": "🔥 VIP is getting more intense by the minute. Those inside are at the peak… and you're still imagining? 😏\n\n💎 Secure your spot: {link}",
+      "22:00": "⚡ Last hours of promotional access! ⏰\n\n💥 Come back now or lose it all: {discount_link}"
     },
     "5": {
-        "13:00": "🔄 {name}, VIP RECEIVES NEW CONTENT EVERY DAY! 📅\n\nMeanwhile, here you only get to KNOW FROM THE OUTSIDE… 🚫\n\n🎯 No more staying on the SURFACE: {link}",
-        "18:00": "👀 {name}, THOSE WHO JOINED YESTERDAY are already ENJOYING EVERYTHING! 💎\n\nAnd you? Still in DOUBT? 🤔\n\n🚀 Don't be left behind: {link}",
-        "22:00": "⚡ OPPORTUNITY DOESN'T WAIT! ⏰\n\nVIP is NOW or NEVER AGAIN! 🎯\n\n💥 This opportunity doesn't come again: {link}"
-    },
-    "6": {
-        "13:00": "📅 {name}, 6 DAYS OF PREVIEW… AND YOU STILL HAVEN'T SEEN ANYTHING THAT REALLY MATTERS! 🚫\n\nTime to CHANGE THIS GAME! 🎯\n\n🚀 No more crumbs: {link}",
-        "18:00": "💎 VIP is RECEIVING SO MUCH CONTENT that I can't even compare it to the preview! 📈\n\nWhile you hesitate, the COLLECTION just GROWS! 🔥\n\n🎯 Want to see EVERYTHING? {link}",
-        "22:00": "⏰ {name}, TOMORROW DECIDES EVERYTHING! 🚨\n\nYour chance is ENDING… 💸\n\n⚡ Don't leave it to the LAST MINUTE: {link}"
-    },
-    "7": {
-        "13:00": "🚨 🚨 🚨 {name} — LAST DAY! ⏰\n\nAfter today, THE PREVIEW IS OVER! 🚫\n\nVIP is NOW or NEVER AGAIN! 💎\n\n🎯 Get your access BEFORE IT CLOSES: {link}",
-        "18:00": "⚡ NOW OR NEVER! ⚡\n\n{name}, those who leave it for later ALWAYS REGRET IT! 😭\n\nVIP is FULL ACCESS GUARANTEE! 🏆\n\n🔥 Don't be another one crying: {link}",
-        "22:00": "🚨 🚨 🚨 {name} — LAST CALL! 🎯\n\n⏰ MIDNIGHT AND IT'S OVER! 💸\n\nIt's VIP or it's OUT! 🚫\n\n💥 YOUR LAST CHANCE: {link}"
-    },
-
-    "retarget": {
-        "1": {
-            "13:00": "💔 {name}, YOUR PREVIEW ACCESS IS OVER… 😢\n\nBut VIP is still BOOMING with EXCLUSIVE CONTENT! 🔥\n\n🎯 Want to GO BACK to PARADISE? {link}",
-            "18:00": "🚨 {name}, RIGHT NOW: NEW CONTENT IN VIP! 📹\n\nYou're MISSING THE BEST! 💎\n\n⚡ Come back NOW: {link}",
-            "22:00": "🎁 SPECIAL CONDITION TODAY ONLY! 💰\n\nLast chance to return with a FLASH DISCOUNT! ⚡\n\n🚀 Don't miss out: {discount_link}"
-        },
-        "2": {
-            "13:00": "👥 {name}, THOSE WHO CAME IN DIDN'T REGRET IT! ⭐⭐⭐⭐⭐\n\n\"BEST DECISION!\" - say VIP members… 💬\n\n💔 Don't just miss it: {link}",
-            "18:00": "📈 {name}, VIP just keeps getting better and better! 🚀\n\nNew content EVERY DAY! 📅\n\n🎯 Time to RECONSIDER? {link}",
-            "22:00": "🔥 SPECIAL FLASH OFFER! ⚡\n\nOnly until today: UNBEATABLE CONDITIONS! 💎\n\n⏰ Last hours: {discount_link}"
-        },
-        "3": {
-            "13:00": "⏰ {name}, LAST CHANCE TO REDEEM! 🚨\n\nAfter this, THAT'S IT… 💸\n\n🎯 Don't burn your chance: {link}",
-            "18:00": "⚡ FINAL DECISION: IT'S NOW OR NEVER! 🎯\n\n{name}, the VIP is WAITING for you! 💎\n\n🚀 Last call: {link}",
-            "22:00": "🚨 🚨 🚨 LAST MESSAGE! ⚡\n\n{name}, DON'T IGNORE THIS CHANCE! 💔\n\n🎁 FINAL OFFER WITH DISCOUNT: {discount_link}\n\n💥 AFTER THIS, TOTAL SILENCE..."
-        }
+      "12:00": "🚨 {name}, last day to recover access! 🕛\n\nAfter today, all special conditions end. 💔\n\n🎯 It's now or never: {link}",
+      "18:00": "🔥 {name}, the door is almost closing! ⚡\n\nLast chance to join with active bonus and full access. 💎\n\nSecure it here: {discount_link}",
+      "22:00": "💀 Last message, {name}! 🚨\n\nAfter this, your access is permanently closed. 🎯\n\nIf you want to experience it all firsthand, now's the moment: {discount_link}"
     }
+  }
 }
+
 
 # -------------------------
 # Inicialização do banco de dados
