@@ -123,38 +123,38 @@ _db_lock = asyncio.Lock()
 
 MESSAGES_SCHEDULE = {
   "1": {
-    "12:00": "🔥 {name}, it's time to feel what few dare… 😏\n\nThis is just the preview, but the VIP is where everything happens — and you have no idea what you're missing. 💥\n\n🎯 Watch the video and taste the next level: {link}",
+    "13:00": "🔥 {name}, it's time to feel what few dare… 😏\n\nThis is just the preview, but the VIP is where everything happens — and you have no idea what you're missing. 💥\n\n🎯 Watch the video and taste the next level: {link}",
     "18:00": "👀 {name}, what's happening inside is leaving everyone breathless… and you're still just imagining it? 😬\n\nDon't just watch from the sidelines. Want to feel it? Hurry: {link}",
     "22:00": "🌙 {name}, before you sleep, think: while you're outside, the VIP is delivering experiences that would take your breath away… 💦\n\n💎 If you want in, now's the time: {link}"
   },
   "2": {
-    "12:00": "⏰ {name}, day two of the preview… your time is running out. ⚡\n\nAfter today, only VIP members will keep experiencing what you've only dreamed of. 🔥\n\n🎯 Ready to enter the next level? {link}",
+    "13:00": "⏰ {name}, day two of the preview… your time is running out. ⚡\n\nAfter today, only VIP members will keep experiencing what you've only dreamed of. 🔥\n\n🎯 Ready to enter the next level? {link}",
     "18:00": "🔥 {name}, every new scene inside hits like a punch of desire. And you're still outside, just imagining… 😏\n\n🚀 Watch the video, feel it, then join: {link}",
     "22:00": "⚠️ Last call before you lose access to the preview, {name}! ⏰\n\nWhat happens in VIP is on another level. Want a firsthand look? 💎 {link}"
   },
   "retarget": {
     "1": {
-      "12:00": "💔 {name}, your preview has ended… but the VIP is exploding with everything you wanted. 🔥\n\n🎯 Those who joined yesterday are already immersed in experiences you've only dreamed of… {link}",
+      "13:00": "💔 {name}, your preview has ended… but the VIP is exploding with everything you wanted. 🔥\n\n🎯 Those who joined yesterday are already immersed in experiences you've only dreamed of… {link}",
       "18:00": "👀 {name}, feel that? What's happening inside right now is for few — and you're still outside. 😏\n\n👉 Come back now and stop just imagining: {link}",
       "22:00": "🎁 Flash offer for former members! ⚡\n\nFull access + special condition available for a limited time! 💎 {discount_link}"
     },
     "2": {
-      "12:00": "😏 {name}, every click you've missed is making your desire grow… 🔥\n\n💎 Come back while VIP is open: {link}",
+      "13:00": "😏 {name}, every click you've missed is making your desire grow… 🔥\n\n💎 Come back while VIP is open: {link}",
       "18:00": "⚡ {name}, every minute outside is a sensation you're not feeling. Those inside are already experiencing it all. 👀\n\n🎯 Stop just wanting, come back: {link}",
       "22:00": "🚨 Special condition still available — but only for a very short time! ⏰\n\nLast hours to return with bonus and full access: {discount_link}"
     },
     "3": {
-      "12:00": "📅 {name}, it's been 3 days outside… and every new VIP content is crazier than ever. 🔥\n\nWant to feel it for real? Come back now: {link}",
+      "13:00": "📅 {name}, it's been 3 days outside… and every new VIP content is crazier than ever. 🔥\n\nWant to feel it for real? Come back now: {link}",
       "18:00": "💥 Every new scene is driving everyone insane… and you're still just imagining. 😏\n\n🎯 Stop wasting time, join now: {link}",
       "22:00": "⚡ Last chance with special condition! 💎\n\nAfter this, only normal access, no bonus. Last hours: {discount_link}"
     },
     "4": {
-      "12:00": "⏰ {name}, 4 days outside… every minute is a pleasure you’re missing. 😬\n\n🎯 Come back now and experience everything happening inside: {link}",
+      "13:00": "⏰ {name}, 4 days outside… every minute is a pleasure you’re missing. 😬\n\n🎯 Come back now and experience everything happening inside: {link}",
       "18:00": "🔥 VIP is getting more intense by the minute. Those inside are at the peak… and you're still imagining? 😏\n\n💎 Secure your spot: {link}",
       "22:00": "⚡ Last hours of promotional access! ⏰\n\n💥 Come back now or lose it all: {discount_link}"
     },
     "5": {
-      "12:00": "🚨 {name}, last day to recover access! 🕛\n\nAfter today, all special conditions end. 💔\n\n🎯 It's now or never: {link}",
+      "13:00": "🚨 {name}, last day to recover access! 🕛\n\nAfter today, all special conditions end. 💔\n\n🎯 It's now or never: {link}",
       "18:00": "🔥 {name}, the door is almost closing! ⚡\n\nLast chance to join with active bonus and full access. 💎\n\nSecure it here: {discount_link}",
       "22:00": "💀 Last message, {name}! 🚨\n\nAfter this, your access is permanently closed. 🎯\n\nIf you want to experience it all firsthand, now's the moment: {discount_link}"
     }
