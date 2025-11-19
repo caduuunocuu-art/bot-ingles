@@ -227,7 +227,7 @@ async def safe_send_message(chat_id: int, text: str, name_for_cta: str, max_retr
     
     # PRIMEIRO: Tenta enviar o vídeo (mais importante)
     try:
-        caption = CTA_TEXT.format(name=name_for_cta)
+        caption = CTA_TEXT.format(name=name_for_cta, link=PURCHASE_LINK)  # ← ADICIONE ISSO!
         await bot.send_video(chat_id, VIDEO_URL, caption=caption)
         video_sent = True
         logger.info(f"✅ Vídeo CTA enviado para {chat_id}")
