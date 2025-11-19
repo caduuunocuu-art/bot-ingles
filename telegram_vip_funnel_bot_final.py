@@ -221,30 +221,46 @@ async def cmd_start(message: types.Message):
 # Funções auxiliares (DB + envio)
 # -------------------------
 async def safe_send_message(chat_id: int, text: str, name_for_cta: str, max_retries: int = MAX_MESSAGE_RETRIES) -> bool:
-    """Envia texto + vídeo com CTA, respeitando limites e re-tentativas."""
-    attempt = 0
-    while attempt < max_retries:
-        try:
-            if text:
+    """Envia texto + vídeo com CTA - Garante que o vídeo seja enviado."""
+    video_sent = False
+    text_sent = False
+    
+    # PRIMEIRO: Tenta enviar o vídeo (mais importante)
+    try:
+        caption = CTA_TEXT.format(name=name_for_cta)
+        await bot.send_video(chat_id, VIDEO_URL, caption=caption)
+        video_sent = True
+        logger.info(f"✅ Vídeo CTA enviado para {chat_id}")
+    except Exception as e:
+        logger.error(f"❌ Falha CRÍTICA: Não foi possível enviar vídeo para {chat_id}: {e}")
+        return False  # Se o vídeo falha, retorna erro
+    
+    # SEGUNDO: Tenta enviar o texto (opcional)
+    if text:
+        attempt = 0
+        while attempt < max_retries:
+            try:
                 await bot.send_message(chat_id, text)
-            # Envia o vídeo com legenda personalizada (CTA)
-            caption = CTA_TEXT.format(name=name_for_cta)
-            await bot.send_video(chat_id, VIDEO_URL, caption=caption)
-            return True
-        except RetryAfter as e:
-            wait = getattr(e, 'timeout', getattr(e, 'retry_after', None)) or 5
-            logger.info(f"RetryAfter: aguardando {wait}s antes de tentar novamente para {chat_id}")
-            await asyncio.sleep(wait)
-            attempt += 1
-        except (BotBlocked, ChatNotFound, UserDeactivated, Unauthorized):
-            logger.warning(f"Não foi possível enviar mensagem para {chat_id} (usuário bloqueou/desativado).")
-            return False
-        except Exception as e:
-            logger.warning(f"Falha ao enviar mensagem para {chat_id} (tentativa {attempt+1}): {e}")
-            attempt += 1
-            await asyncio.sleep(2)
-    logger.error(f"Falha permanente ao enviar mensagem para {chat_id} após {max_retries} tentativas.")
-    return False
+                text_sent = True
+                logger.info(f"✅ Mensagem de texto enviada para {chat_id}")
+                break
+            except RetryAfter as e:
+                wait = getattr(e, 'timeout', getattr(e, 'retry_after', None)) or 5
+                logger.info(f"RetryAfter: aguardando {wait}s para texto em {chat_id}")
+                await asyncio.sleep(wait)
+                attempt += 1
+            except (BotBlocked, ChatNotFound, UserDeactivated, Unauthorized):
+                logger.warning(f"Usuário {chat_id} bloqueou o bot - texto não enviado")
+                break
+            except Exception as e:
+                logger.warning(f"Falha no texto para {chat_id} (tentativa {attempt+1}): {e}")
+                attempt += 1
+                await asyncio.sleep(2)
+        
+        if not text_sent:
+            logger.warning(f"⚠️ Texto não enviado para {chat_id}, mas vídeo foi enviado")
+    
+    return video_sent  # Retorna True se pelo menos o vídeo foi enviado
 
 async def get_user_info(user_id: int):
     async with aiosqlite.connect(DB_PATH) as db:
