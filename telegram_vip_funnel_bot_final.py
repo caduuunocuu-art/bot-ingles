@@ -465,16 +465,7 @@ async def remove_user_from_group(user_id: int):
                 await bot.send_message(admin_id, f"Erro ao remover usuário {user_id} do grupo: {e}")
             except Exception:
                 pass
-
-        logger.info(f"Usuário {user_id} removido do grupo de prévia")
-    except (ChatAdminRequired, TelegramAPIError) as e:
-        logger.error(f"Erro ao remover usuário {user_id} do grupo: {e}")
-        for admin_id in ADMINS:
-            try:
-                await bot.send_message(admin_id, f"Erro ao remover usuário {user_id} do grupo: {e}")
-            except Exception:
-                pass
-
+      
 # -------------------------
 # Handler para novos membros no grupo de prévia (ANTI-RETORNO CORRIGIDO)
 # -------------------------
@@ -500,9 +491,9 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
                         await bot.ban_chat_member(PREVIEWS_GROUP_ID, user_id)
                         await mark_user_banned(user_id)
                         name = user.first_name or "Usuário"
-                        ban_text = "{name}, seu acesso gratuito já expirou. Para voltar, só no VIP: {link}".format(
-                            name=name, link=PURCHASE_LINK
-                        )
+                        ban_text = "{name}, your free access has expired. To return, only VIP: {link}".format(
+    name=name, link=PURCHASE_LINK
+)
                         await safe_send_message(user_id, ban_text, name_for_cta=name)
                         logger.info(f"Usuário {user_id} ({name}) banido por tentativa de retorno após período")
                     except Exception as e:
@@ -516,14 +507,14 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
             elif not user_info or not user_info[4]:  # joined_group flag
                 await update_user_joined(user_id, user.username, user.first_name, user.last_name)
 
-                # Vídeo CTA de boas-vindas
-try:
-    caption = CTA_TEXT.format(name=user.first_name or "Usuário", link=PURCHASE_LINK)  # ← ADICIONE ISSO!
-    await bot.send_video(user_id, VIDEO_URL, caption=caption)
-    logger.info(f"Vídeo CTA de boas-vindas enviado para {user_id}")
+                               # Vídeo CTA de boas-vindas
+                try:
+                    caption = CTA_TEXT.format(name=user.first_name or "Usuário", link=PURCHASE_LINK)
+                    await bot.send_video(user_id, VIDEO_URL, caption=caption)
+                    logger.info(f"Vídeo CTA de boas-vindas enviado para {user_id}")
                 except Exception as e:
                     logger.error(f"Erro ao enviar vídeo CTA de boas-vindas para {user_id}: {e}")
-
+                    
                 await schedule_user_messages(user_id, user.username, user.first_name, user.last_name)
 
                 # Mensagem imediata (dia 1)
