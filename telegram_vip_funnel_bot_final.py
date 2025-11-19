@@ -58,7 +58,7 @@ CTA_TEXT = """
 🚨 {name}, YOUR TIME IS RUNNING OUT! ⏰
 
 🚨 IN VIP YOU WOULD SEE RIGHT NOW:
-✅ FULL scene without cuts
+✅ FULL scenes without cuts
 ✅ EXCLUSIVE angles  
 ✅ 100% UNCENSORED content
 ✅ OnlyFans LEAKED TODAY
@@ -73,9 +73,7 @@ CTA_TEXT = """
 ⭐ 47 people joined VIP
 ⭐ 83 NEW contents
 
-👉 SECURE YOUR SPOT:
-{link}
-
+👉 SECURE YOUR SPOT: {link}
 """
 # Horários configuráveis (formato "HH:MM")
 MESSAGE_HOURS = os.getenv("MESSAGE_HOURS", "12:00,18:00,22:00").split(",")
@@ -438,10 +436,9 @@ async def remove_user_from_group(user_id: int):
         user_info = await get_user_info(user_id)
         if user_info:
             name = user_info[2] or "Usuário"
-            removal_text = "Your access to the preview group has ended, {name} ❌\n\nJoin VIP to continue: {link}".format(
-                name=name,
-                link=PURCHASE_LINK
-            )
+            ban_text = "{name}, your free access has expired. To return, only VIP: {link}".format(
+    name=name, link=PURCHASE_LINK
+)
             await safe_send_message(user_id, removal_text, name_for_cta=name)
 
         logger.info(f"Usuário {user_id} removido do grupo de prévia")
