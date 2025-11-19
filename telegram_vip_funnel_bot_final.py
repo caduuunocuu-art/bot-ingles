@@ -517,10 +517,10 @@ async def handle_chat_member_update(update: ChatMemberUpdated):
                 await update_user_joined(user_id, user.username, user.first_name, user.last_name)
 
                 # Vídeo CTA de boas-vindas
-                try:
-                    caption = CTA_TEXT.format(name=user.first_name or "Usuário")
-                    await bot.send_video(user_id, VIDEO_URL, caption=caption)
-                    logger.info(f"Vídeo CTA de boas-vindas enviado para {user_id}")
+try:
+    caption = CTA_TEXT.format(name=user.first_name or "Usuário", link=PURCHASE_LINK)  # ← ADICIONE ISSO!
+    await bot.send_video(user_id, VIDEO_URL, caption=caption)
+    logger.info(f"Vídeo CTA de boas-vindas enviado para {user_id}")
                 except Exception as e:
                     logger.error(f"Erro ao enviar vídeo CTA de boas-vindas para {user_id}: {e}")
 
