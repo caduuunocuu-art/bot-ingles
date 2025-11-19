@@ -452,10 +452,19 @@ async def remove_user_from_group(user_id: int):
         user_info = await get_user_info(user_id)
         if user_info:
             name = user_info[2] or "Usuário"
-            ban_text = "{name}, your free access has expired. To return, only VIP: {link}".format(
-    name=name, link=PURCHASE_LINK
-)
-            await safe_send_message(user_id, removal_text, name_for_cta=name)
+            removal_text = "{name}, your free access has expired. To return, only VIP: {link}".format(
+                name=name, link=PURCHASE_LINK
+            )
+            await safe_send_message(user_id, removal_text, name_for_cta=name)  # ← CORRIGIDO!
+
+        logger.info(f"Usuário {user_id} removido do grupo de prévia")
+    except (ChatAdminRequired, TelegramAPIError) as e:
+        logger.error(f"Erro ao remover usuário {user_id} do grupo: {e}")
+        for admin_id in ADMINS:
+            try:
+                await bot.send_message(admin_id, f"Erro ao remover usuário {user_id} do grupo: {e}")
+            except Exception:
+                pass
 
         logger.info(f"Usuário {user_id} removido do grupo de prévia")
     except (ChatAdminRequired, TelegramAPIError) as e:
