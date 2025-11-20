@@ -129,9 +129,9 @@ MESSAGES_SCHEDULE = {
     "22:00": "🌙 {name}, TODAY 23 PEOPLE UPGRADED FROM PREVIEW TO VIP!\n\nThey got tired of crumbs and went for the FULL FEAST!\n\n🚀 Your turn tomorrow? {link}"
   },
   "2": {
-    "10:00": "⏰ {name}, 12H LEFT UNTIL YOUR BAN!\n\nYour preview access expires TODAY at 22:00!\n\n🔞 In VIP you'd have access right now to:\n✅ +500 COMPLETE scenes\n✅ +50 leaked onlyfans\n✅ DAILY content\n\n💀 Gonna miss this chance? {link}",
-    "16:00": "🚨 {name}, RED ALERT: 6H REMAINING!\n\nYour preview ban is APPROACHING!\n\n🔥 Last chance to upgrade to VIP with:\n• LIFETIME access\n• UNCENSORED content\n• DAILY updates\n\n⚡ Run before it's too late: {link}",
-    "21:00": "💀 {name}, FINAL HOUR IN PREVIEW!\n\nONLY 60 MINUTES left until your BAN!\n\n🎯 Out of 47 people banned today, 41 joined VIP!\n\n🚀 Final opportunity: {link}"
+    "12:00": "⏰ {name}, 12H LEFT UNTIL YOUR BAN!\n\nYour preview access expires TODAY at 22:00!\n\n🔞 In VIP you'd have access right now to:\n✅ +500 COMPLETE scenes\n✅ +50 leaked onlyfans\n✅ DAILY content\n\n💀 Gonna miss this chance? {link}",
+    "18:00": "🚨 {name}, RED ALERT: 6H REMAINING!\n\nYour preview ban is APPROACHING!\n\n🔥 Last chance to upgrade to VIP with:\n• LIFETIME access\n• UNCENSORED content\n• DAILY updates\n\n⚡ Run before it's too late: {link}",
+    "22:00": "💀 {name}, FINAL HOUR IN PREVIEW!\n\nONLY 60 MINUTES left until your BAN!\n\n🎯 Out of 47 people banned today, 41 joined VIP!\n\n🚀 Final opportunity: {link}"
   },
   "retarget": {
     "1": {
