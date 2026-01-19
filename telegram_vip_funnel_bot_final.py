@@ -30,6 +30,7 @@ from apscheduler.triggers.date import DateTrigger
 # -------------------------
 API_TOKEN = os.getenv("TG_BOT_TOKEN", "PUT_YOUR_BOT_TOKEN_HERE")
 PREVIEWS_GROUP_ID = int(os.getenv("PREVIEWS_GROUP_ID", "-1003053104506"))
+print("🔥 PREVIEWS_GROUP_ID EM USO:", PREVIEWS_GROUP_ID)
 PREVIEWS_GROUP_INVITE_LINK = os.getenv("PREVIEWS_GROUP_INVITE_LINK", "https://t.me/+wYpQExxUOzkyNDk5")
 
 # Redirecionamento para o bot de vendas (clicável)
