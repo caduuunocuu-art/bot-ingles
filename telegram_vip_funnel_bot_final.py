@@ -663,9 +663,11 @@ async def on_shutdown(_):
     logger.info("Bot desligado e agendador parado")
 
 if __name__ == '__main__':
-    executor.start_polling(
-        dp,
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        skip_updates=True,
-    )
+executor.start_polling(
+    dp,
+    on_startup=on_startup,
+    on_shutdown=on_shutdown,
+    skip_updates=True,
+    allowed_updates=["message", "chat_member", "my_chat_member"]
+)
+
