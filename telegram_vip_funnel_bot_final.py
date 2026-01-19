@@ -670,4 +670,3 @@ executor.start_polling(
     skip_updates=True,
     allowed_updates=["message", "chat_member", "my_chat_member"]
 )
-
