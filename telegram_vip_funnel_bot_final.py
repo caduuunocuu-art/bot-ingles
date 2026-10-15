@@ -658,7 +658,7 @@ async def cmd_unban(message: types.Message):
        user_id=list(ADMINS),
        chat_type=ChatType.PRIVATE,
    )
-   async def get_file_id(message: types.Message):
+async def get_file_id(message: types.Message):
        media = message.video or message.document
        await message.answer(f"file_id:\n\n{media.file_id}")
        
