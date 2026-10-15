@@ -653,7 +653,7 @@ async def cmd_unban(message: types.Message):
    # -------------------------
    # Captura de file_id (admin envia vídeo e o bot responde com o ID)
    # -------------------------
-   @dp.message_handler(
+@dp.message_handler(
        content_types=[types.ContentType.VIDEO, types.ContentType.DOCUMENT],
        user_id=list(ADMINS),
        chat_type=ChatType.PRIVATE,
