@@ -650,6 +650,18 @@ async def cmd_unban(message: types.Message):
         await message.answer(error_msg)
         logger.error(f"Erro no comando desbanir: {e}")
 
+   # -------------------------
+   # Captura de file_id (admin envia vídeo e o bot responde com o ID)
+   # -------------------------
+   @dp.message_handler(
+       content_types=[types.ContentType.VIDEO, types.ContentType.DOCUMENT],
+       user_id=list(ADMINS),
+       chat_type=ChatType.PRIVATE,
+   )
+   async def get_file_id(message: types.Message):
+       media = message.video or message.document
+       await message.answer(f"file_id:\n\n{media.file_id}")
+       
 # -------------------------
 # Startup / Shutdown
 # -------------------------
